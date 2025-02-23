@@ -15,10 +15,10 @@ pipeline {
         
         stage('Setup Python Environment') {
             steps {
-                sh """
-                    python3 -m venv ${VENV_NAME}
-                    . ${VENV_NAME}/bin/activate
-                    pip install --upgrade pip
+                bat """
+                    python -m venv %VENV_NAME%
+                    call %VENV_NAME%\\Scripts\\activate.bat
+                    python -m pip install --upgrade pip
                     pip install -r requirements.txt
                 """
             }
@@ -26,8 +26,8 @@ pipeline {
         
         stage('Run Tests') {
             steps {
-                sh """
-                    . ${VENV_NAME}/bin/activate
+                bat """
+                    call %VENV_NAME%\\Scripts\\activate.bat
                     pytest tests/
                 """
             }
@@ -35,18 +35,18 @@ pipeline {
         
         stage('Deploy API') {
             steps {
-                sh """
-                    . ${VENV_NAME}/bin/activate
-                    nohup uvicorn app:app --host 0.0.0.0 --port 8000 &
+                bat """
+                    call %VENV_NAME%\\Scripts\\activate.bat
+                    start /B uvicorn app:app --host 0.0.0.0 --port 8000
                 """
             }
         }
         
         stage('Deploy Web Interface') {
             steps {
-                sh """
-                    . ${VENV_NAME}/bin/activate
-                    nohup python web_app.py &
+                bat """
+                    call %VENV_NAME%\\Scripts\\activate.bat
+                    start /B python web_app.py
                 """
             }
         }
