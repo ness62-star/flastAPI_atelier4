@@ -13,12 +13,15 @@ pipeline {
             }
         }
         
-        stage('Setup Python Environment') {
+         stage('Setup Python Environment') {
             steps {
                 bat """
                     python -m venv %VENV_NAME%
                     call %VENV_NAME%\\Scripts\\activate.bat
                     python -m pip install --upgrade pip
+                    pip install numpy==1.24.3
+                    pip install scipy==1.10.1
+                    pip install scikit-learn==1.0.2
                     pip install -r requirements.txt
                 """
             }
